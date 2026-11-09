@@ -14,11 +14,11 @@ define([
 
     $.widget('infrangible.priceOptions', $.mage.priceOptions, {
         _create: function() {
-            var form = this.element,
+            const form = this.element,
                 options = $(this.options.optionsSelector, form);
 
             $.each(options, function() {
-                var role = $(this).attr('data-role');
+                const role = $(this).attr('data-role');
 
                 if (! role) {
                     $(this).attr('data-role', 'default');
@@ -33,14 +33,14 @@ define([
         _onOptionChanged: function(event) {
             this._super(event);
 
-            var option = $(event.target);
-            var optionId = utils.findOptionId(option[0]);
+            const option = $(event.target);
+            const optionId = utils.findOptionId(option[0]);
 
             option.trigger('product_option_changed', [optionId]);
         },
 
         getDefaultHandler: function getQtyHandler() {
-            var self = this;
+            const self = this;
 
             return function (element, optionConfig) {
                 return self.getOptionValue(element, optionConfig);
@@ -48,13 +48,13 @@ define([
         },
 
         getOptionValue: function defaultGetOptionValue(element, optionsConfig) {
-            var changes = {},
+            const changes = {},
                 optionId = utils.findOptionId(element[0]),
                 optionName = element.prop('name'),
                 optionType = element.prop('type'),
                 optionValue = element.val(),
-                optionConfig = optionsConfig[optionId],
-                optionHash = optionName;
+                optionConfig = optionsConfig[optionId];
+            let optionHash = optionName;
 
             switch (optionType) {
                 case 'text':
