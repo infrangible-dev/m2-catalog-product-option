@@ -14,14 +14,14 @@ define([
 
     // $.widget() returns the constructor, which is $.infrangible.priceOptions
     return $.widget('infrangible.priceOptions', $.mage.priceOptions, {
-        _create: function() {
+        _create: function () {
             const form = this.element,
                 options = $(this.options.optionsSelector, form);
 
-            $.each(options, function() {
+            $.each(options, function () {
                 const role = $(this).attr('data-role');
 
-                if (! role) {
+                if (!role) {
                     $(this).attr('data-role', 'default');
                 }
             });
@@ -31,16 +31,16 @@ define([
             this._super();
         },
 
-        _onOptionChanged: function(event) {
+        _onOptionChanged: function (event) {
             this._super(event);
 
-            const option = $(event.target);
-            const optionId = utils.findOptionId(option[0]);
+            const option = $(event.target),
+                optionId = utils.findOptionId(option[0]);
 
             option.trigger('product_option_changed', [optionId]);
         },
 
-        getDefaultHandler: function getDefaultHandler() {
+        getDefaultHandler: function () {
             const self = this;
 
             return function (element, optionConfig) {
@@ -48,7 +48,7 @@ define([
             };
         },
 
-        getOptionValue: function defaultGetOptionValue(element, optionsConfig) {
+        getOptionValue: function (element, optionsConfig) {
             const changes = {},
                 optionId = utils.findOptionId(element[0]),
                 optionName = element.prop('name'),
@@ -58,41 +58,41 @@ define([
             let optionHash = optionName;
 
             switch (optionType) {
-                case 'text':
-                case 'textarea':
-                    changes[optionHash] = optionValue ? optionConfig.prices : {};
-                    break;
+            case 'text':
+            case 'textarea':
+                changes[optionHash] = optionValue ? optionConfig.prices : {};
+                break;
 
-                case 'radio':
-                    if (element.is(':checked')) {
-                        changes[optionHash] = optionConfig[optionValue] && optionConfig[optionValue].prices || {};
-                    }
-                    break;
-
-                case 'select-one':
+            case 'radio':
+                if (element.is(':checked')) {
                     changes[optionHash] = optionConfig[optionValue] && optionConfig[optionValue].prices || {};
-                    break;
+                }
+                break;
 
-                case 'select-multiple':
-                    _.each(optionConfig, function (row, optionValueCode) {
-                        optionHash = optionName + '##' + optionValueCode;
-                        changes[optionHash] = _.contains(optionValue, optionValueCode) ? row.prices : {};
-                    });
-                    break;
+            case 'select-one':
+                changes[optionHash] = optionConfig[optionValue] && optionConfig[optionValue].prices || {};
+                break;
 
-                case 'checkbox':
-                    optionHash = optionName + '##' + optionValue;
-                    changes[optionHash] = element.is(':checked') ? optionConfig[optionValue].prices : {};
-                    break;
+            case 'select-multiple':
+                _.each(optionConfig, function (row, optionValueCode) {
+                    optionHash = optionName + '##' + optionValueCode;
+                    changes[optionHash] = _.contains(optionValue, optionValueCode) ? row.prices : {};
+                });
+                break;
 
-                case 'file':
-                    // Checking for 'disable' property equal to checking DOMNode with id*="change-"
-                    changes[optionHash] = optionValue || element.prop('disabled') ? optionConfig.prices : {};
-                    break;
+            case 'checkbox':
+                optionHash = optionName + '##' + optionValue;
+                changes[optionHash] = element.is(':checked') ? optionConfig[optionValue].prices : {};
+                break;
 
-                default:
-                    console.error('Unsupported option type: "' + optionType + '"');
-                    break;
+            case 'file':
+                // Checking for 'disable' property equal to checking DOMNode with id*="change-"
+                changes[optionHash] = optionValue || element.prop('disabled') ? optionConfig.prices : {};
+                break;
+
+            default:
+                console.error('Unsupported option type: "' + optionType + '"');
+                break;
             }
 
             element.trigger('product_option_changes', [optionId, optionHash, element, optionsConfig, changes]);
